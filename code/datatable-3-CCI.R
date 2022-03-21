@@ -28,11 +28,21 @@ cciscore <- c(1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 2, 2, 2, 3, 6, 6, 2)
 names(cciscore) <- names(code.cci)
 
 
-
+# Linux
 info.cci <- mclapply(names(code.cci), function(x){
   merge(data.asd[, .(RN_INDI, Indexdate)], 
         m40[like(MCEX_SICK_SYM, paste(code.cci[[x]], collapse = "|"))][order(MDCARE_STRT_DT), .SD[1], keyby = "RN_INDI"][, .(RN_INDI, inidate = MDCARE_STRT_DT)],
-        by = "RN_INDI", all.x = T)[, ev := as.integer(Indexdate > as.Date(as.character(inidate), format = "%Y%m%d"))][, ev := ifelse(is.na(ev), 0, ev)][]$ev * cciscore[x]
-}, mc.cores = 4) %>% do.call(cbind, .) %>% cbind(rowSums(.))
+        by = "RN_INDI", all.x = T)[, ev := as.integer(Indexdate >= as.Date(as.character(inidate), format = "%Y%m%d"))][, ev := ifelse(is.na(ev), 0, ev)][]$ev * cciscore[x]
+}, mc.cores = 1) %>% do.call(cbind, .) %>% cbind(rowSums(.))
+
+colnames(info.cci) <- c(paste0("Prev_", names(code.cci)), "CCI")
+
+# Windows
+info.cci <- lapply(names(code.cci), function(x){
+  merge(data.asd[, .(RN_INDI, Indexdate)], 
+        m40[like(MCEX_SICK_SYM, paste(code.cci[[x]], collapse = "|"))][order(MDCARE_STRT_DT), .SD[1], keyby = "RN_INDI"][, .(RN_INDI, inidate = MDCARE_STRT_DT)],
+        by = "RN_INDI", all.x = T)[, ev := as.integer(Indexdate >= as.Date(as.character(inidate), format = "%Y%m%d"))][, ev := ifelse(is.na(ev), 0, ev)][]$ev * cciscore[x]
+}) %>% do.call(cbind, .) %>% cbind(rowSums(.))
+
 colnames(info.cci) <- c(paste0("Prev_", names(code.cci)), "CCI")
 

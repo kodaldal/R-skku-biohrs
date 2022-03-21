@@ -16,6 +16,13 @@ code.drug <- list(
 info.prevmed <- mclapply(code.drug, function(x){
   merge(data.asd,
         m60[GNL_NM_CD %in% x][order(MDCARE_STRT_DT), .SD[1], keyby = "RN_INDI"][, .(RN_INDI, inidate = MDCARE_STRT_DT)],
-        by = "RN_INDI", all.x = T)[, ev := as.integer(Indexdate > as.Date(as.character(inidate), format = "%Y%m%d"))][, ev := ifelse(is.na(ev), 0, ev)][]$ev
+        by = "RN_INDI", all.x = T)[, ev := as.integer(Indexdate >= as.Date(as.character(inidate), format = "%Y%m%d"))][, ev := ifelse(is.na(ev), 0, ev)][]$ev
 }, mc.cores = 3) %>% do.call(cbind, .)
+
+info.prevmed <- lapply(code.drug, function(x){
+  merge(data.asd,
+        m60[GNL_NM_CD %in% x][order(MDCARE_STRT_DT), .SD[1], keyby = "RN_INDI"][, .(RN_INDI, inidate = MDCARE_STRT_DT)],
+        by = "RN_INDI", all.x = T)[, ev := as.integer(Indexdate >= as.Date(as.character(inidate), format = "%Y%m%d"))][, ev := ifelse(is.na(ev), 0, ev)][]$ev
+}) %>% do.call(cbind, .)
+
 colnames(info.prevmed) <- paste0("Prev_", names(code.drug))

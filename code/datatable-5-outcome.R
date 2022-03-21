@@ -1,6 +1,8 @@
 ## MI after indexdate
 
-source("code/inclusion.R")
+setwd("D:/_study/Dev/R/R-skku-biohrs/nhis")
+source("../code/datatable-2-inclusion.R")
+
 info.MI <- merge(data.asd[, .(RN_INDI, Indexdate)], 
                  m40[like(MCEX_SICK_SYM, paste(code.cci[["MI"]], collapse = "|"))][, .(RN_INDI, MIdate = MDCARE_STRT_DT)], by = "RN_INDI", all.x = T) %>% 
   .[Indexdate < as.Date(as.character(MIdate), format = "%Y%m%d")] %>% 
@@ -8,10 +10,10 @@ info.MI <- merge(data.asd[, .(RN_INDI, Indexdate)],
 
 
 
-
 data.final <- cbind(data.asd, info.cci, info.prevmed) %>% merge(info.MI, by = "RN_INDI", all.x = T) %>% .[, `:=`(MI = as.integer(!is.na(MI)),
                                                                                                                  MIday = pmin(Day_FU, MIday, na.rm = T))] %>% .[]
 
+#for (v in var.factor){ data.final[[v]] <- factor(data.final[[v]]) }
 
 var.factor <- c("COD1", "COD2", "SEX", "Death", grep("Prev_", names(data.final), value = T), "MI")
 
