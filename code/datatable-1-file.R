@@ -11,6 +11,8 @@ for (v in c("bnc", "bnd", "m20", "m30", "m40", "m60", "inst", "g1e_0208", "g1e_0
 
 
 ## fst
+setwd("D:/_study/Dev/R/R-skku-biohrs/nhis/")
+
 inst <- read_fst("data/nsc2_inst_1000.fst", as.data.table = T)
 bnc <- read_fst("data/nsc2_bnc_1000.fst", as.data.table = T) 
 bnd <- read_fst("data/nsc2_bnd_1000.fst", as.data.table = T) 

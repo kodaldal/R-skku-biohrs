@@ -25,6 +25,7 @@ dt[(EXMD_BZ_YYYY %in% 2009:2012) & (BMI >= 25)] %>% .[order(HGHT)]  ## same
 ## Column
 dt[, 1:10]
 dt[, c("HGHT", "WGHT")]
+dt[, list(HGHT, WGHT)]
 dt[, .(HGHT, WGHT)]
 dt[, .(Height = HGHT, Weight = WGHT)]   # rename
 
@@ -37,6 +38,7 @@ colvars <- grep("Q_", names(dt), value = T)
 dt[, ..colvars]
 dt[, colvars, with = F]
 dt[, .SD, .SDcols = colvars]
+
 dt[(EXMD_BZ_YYYY %in% 2009:2012) & (BMI >= 25), ..colvars]
 dt[, !..colvars]
 dt[, -..colvars]
@@ -88,6 +90,7 @@ dt[, BMI2 := NULL]                                         # remove
 dt[, .SD]   # all column
 dt[, lapply(.SD, class)]
 dt[order(EXMD_BZ_YYYY), .SD[1], keyby = "RN_INDI"]
+
 dt[order(EXMD_BZ_YYYY), .SD[1], .SDcols = colvars, keyby = "RN_INDI"]
 dt[, .N, keyby = "RN_INDI"]
 
