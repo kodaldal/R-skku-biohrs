@@ -1,6 +1,34 @@
+## Setup
+
+# install.packages("data.table")
+# install.packages("curl")
+# install.packages("tableone")
+
+library(data.table)
+library(curl)
+
 library(tableone)
 
-data.final
+## Exam data: 09-15
+dt <- read.csv("https://raw.githubusercontent.com/jinseob2kim/lecture-snuhlab/master/data/example_g1e.csv")
+
+for (v in grep("Q_", vars.tb1, value = T)){
+  dt[[v]] <- factor(dt[[v]])
+}
+
+vars.tb1 <- names(dt)[-c(1:3)]
+
+# create table1
+CreateTableOne(vars.tb1, data=dt)
+
+zz <- CreateTableOne(vars.tb1, data=dt, strata = "Q_PHX_DX_STK")
+
+print(zz, nonnormal = c("GCT", "GFR"), 
+      exact = c("Q_SMK_YN"), smd = T,
+      showAllLevels = T, cramVars = c("QPHX_DX_HTDZ"))
+
+write.csv(print(zz), "tbl.csv", row.names = T)
+getwd()
 
 ## table 1
 vars.tb1 <- setdiff(names(data.final), c("RN_INDI", "COD1", "COD2", "Indexdate"))
