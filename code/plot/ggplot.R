@@ -23,12 +23,7 @@ ggplot(data=data2, aes(x=HGHT, y=WGHT)) +
     name = "Exam year") +
   geom_smooth(color="brown", size=0.8)
 
-## box plot
-data2 <- data %>% filter(!is.na(Q_SMK_YN))
-ggplot(data=data2, aes(x=factor(Q_SMK_YN), y=BP_SYS)) +
-  geom_boxplot() +
-  ggtitle("SBP average by smoking") + ylab("SBP(mmHg)") + xlab("Smoking") +
-  scale_x_discrete(labels=c("Never", "Ex-smoker", "Current"))
+scale_x_discrete(labels=c("Never", "Ex-smoker", "Current"))
 
 data2 <- data2 %>% filter(!is.na(Q_PHX_DX_HTN))
 ggplot(data=data2, aes(x=factor(Q_SMK_YN), y=BP_SYS)) +

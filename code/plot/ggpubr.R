@@ -82,6 +82,14 @@ pp <- function() {
 
 plot_file <- read_pptx() %>%
   add_slide() %>% ph_with(dml(code = pp), location=ph_location_type(type="body"))
+
+pp2 <- function() {
+  hist(data$HGHT, main="Distribution of height", xlab="height(cm)",
+       breaks = 30, freq=F, col="grey", border="white")
+}
+
+plot_file <- read_pptx() %>%
+  add_slide() %>% ph_with(dml(code = pp2), location=ph_location_type(type="body"))
   
 print(plot_file, target = "plot_file.pptx")
 

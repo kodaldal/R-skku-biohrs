@@ -270,6 +270,26 @@ getmode <- function(v){
 getmode(ex$Q_PHX_DX_STK)
 
 
+# 결측치
+vars.ok <- sapply(names(ex), function(v){sum(is.na(ex[, v])) < nrow(ex)/10})
+ex.impute <- ex[, vars.ok]                                     ## only missing < 10%
+
+for (v in names(ex.impute)){
+  if (is.factor(ex.impute[, v])){                              ## or class(ex[, v]) == "factor"
+    ex.impute[, v] <- ifelse(is.na(ex.impute[, v]), 
+                             getmode(ex.impute[, v]), 
+                             ex.impute[, v])
+  } else if (is.numeric(ex[, v])){                             ## or class(ex[, v]) %in% c("integer", "numeric")
+    ex.impute[, v] <- ifelse(is.na(ex.impute[, v]), 
+                             median(ex.impute[, v], na.rm = T), 
+                             ex.impute[, v])
+  } else{                                                      ## when date
+    ex.impute[, v]
+  }
+}
+
+summary(ex.impute)
+
 
 ## Subset
 ex1 <- ex.naomit                                               ## simple name

@@ -72,7 +72,6 @@ a %>% transmute(new_x = 1, new_y = 2)
 aggregate(BMI ~ Sex + Smoking, data = a,
           FUN = function(x) {c(mean = mean(x), sd = sd(x))})
           
-
 a %>% 
   group_by(Sex, Smoking) %>% 
   summarize(count = n(),              ## n()는 샘플수 
@@ -89,3 +88,9 @@ a %>%
   select(-STRESS_EXIST) %>%
   group_by(Sex, Smoking) %>%
   summarize_all(list(mean = mean, sd =sd))
+
+a %>% 
+  filter(Age >= 50) %>% 
+  select(-STRESS_EXIST) %>%
+  group_by(Sex, Smoking) %>%
+  summarize_all(mean)

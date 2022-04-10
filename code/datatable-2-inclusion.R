@@ -2,11 +2,11 @@ library(data.table);library(magrittr)
 # Set core number when data.table
 setDTthreads(0)  ## 0: All
 
+# setwd("D:/_study/Dev/R/R-skku-biohrs/nhis")
+
 ## csv
 inst <- fread("data/nsc2_inst_1000.csv")
 bnc <- fread("data/nsc2_bnc_1000.csv") 
-
-# setwd("D:/_study/Dev/R/R-skku-biohrs/nhis")
 
 ## Death date: last day in month
 bnd <- fread("data/nsc2_bnd_1000.csv")[, Deathdate := (lubridate::ym(DTH_YYYYMM) %>% lubridate::ceiling_date(unit = "month") - 1)][]
@@ -34,11 +34,7 @@ data.asd <- merge(bnd, bnc[, .(SEX = SEX[1]), keyby = "RN_INDI"], by = "RN_INDI"
   merge(data.incl, by = "RN_INDI") %>% 
   .[, `:=`(Age = year(Indexdate) - as.integer(substr(BTH_YYYY, 1, 4)),
            Death = as.integer(!is.na(DTH_YYYYMM)),
-           Day_FU = as.integer(pmin(as.Date("2015-12-31"), Deathdate, na.rm =T) - Indexdate))] %>% .[, -c("BTH_YYYY", "DTH_YYYYMM", "Deathdate")] 
-
-
-
-
+           Day_FU = as.integer(pmin(as.Date("2015-12-31"), Deathdate, na.rm =T) - Indexdate))] %>% .[, -c("BTH_YYYY", "DTH_YYYYMM", "Deathdate")]
 
 ## after 2006, New I10-15 (Hypertensive disease) in Main Sick
 code.HTN <- paste(paste0("I", 10:15), collapse = "|")
